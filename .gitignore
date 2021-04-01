@@ -1,0 +1,4 @@
+*.code-workspace
+build/
+compile_commands.json
+sandbox/

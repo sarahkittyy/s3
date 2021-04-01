@@ -1,0 +1,14 @@
+[build]
+
+command=cmake -DBUILD_SANDBOX=ON -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && make
+cwd=build
+
+[test]
+
+command=make CTEST_OUTPUT_ON_FAILURE=1 test
+cwd=build
+
+[run]
+
+command=../build/sandbox/s3-sandbox
+cwd=./sandbox/
