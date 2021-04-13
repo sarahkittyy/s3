@@ -13,7 +13,7 @@
 - [ ] shadows
 - [ ] transparency
 - [ ] billboard template container
-- [x] fonts, text
+- [ ] fonts, text
 - [x] timing / clock utility
 - [x] events, hooks
 - [x] keyboard & mouse i/o
