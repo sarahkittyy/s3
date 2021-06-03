@@ -4,7 +4,6 @@
 
 #include <cassert>
 #include <cmath>
-#include <iostream>
 
 namespace s3::cams {
 
@@ -100,8 +99,6 @@ void free::update() {
 	}
 
 	m_pos += m_vel * dt;
-
-	std::cout << m_pos.x << ", " << m_pos.y << ", " << m_pos.z << std::endl;
 }
 
 glm::mat4 free::proj() const {
