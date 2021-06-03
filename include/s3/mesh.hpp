@@ -36,8 +36,11 @@ public:
 	void load_from_obj(std::istream& data);
 	void load_from_obj(const std::string& data);
 
+	/// load the mesh data from a given .obj file
+	void load_from_file(const std::string& file);
+
 	/// append a vertex to the mesh
-	void push_v(vertex v);
+	int push_v(vertex v);
 
 	/// append a triangle to the mesh (counter clockwise!)
 	void push_t(unsigned a, unsigned b, unsigned c);

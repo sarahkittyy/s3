@@ -21,7 +21,7 @@ public:
 
 protected:
 	/// returns a reference to the primary app window
-	const s3::window& window() const;
+	s3::window& window() const;
 };
 
 }

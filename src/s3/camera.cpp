@@ -23,8 +23,8 @@ glm::mat4 camera::view() const {
 void camera::update() {
 }
 
-const s3::window& camera::window() const {
-	return window::cactive();
+s3::window& camera::window() const {
+	return window::active();
 }
 
 }

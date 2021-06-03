@@ -5,9 +5,9 @@
 #include <s3/shader.hpp>
 #include <s3/window.hpp>
 
+#include <s3/cam/fixed.hpp>
 #include <s3/cam/free.hpp>
 #include <s3/cam/orbital.hpp>
-#include <s3/cam/static.hpp>
 
 #include <s3/events.hpp>
 

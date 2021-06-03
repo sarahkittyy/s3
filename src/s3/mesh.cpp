@@ -1,5 +1,6 @@
 #include "s3/mesh.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <sstream>
@@ -41,22 +42,88 @@ void mesh::clear() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
 }
 
-//TODO: this
+/// reads in position, uv, and norm data from a .obj format face specifier
+static void read_face(std::string s, int& i, int& t, int& n) {
+	std::transform(s.begin(), s.end(), s.begin(), [](const char& c) {
+		if (c == '/') {
+			return ' ';
+		} else {
+			return c;
+		}
+	});
+	std::istringstream is(s);
+	is >> i >> t >> n;
+	i -= 1;
+	t -= 1;
+	n -= 1;
+}
+
 void mesh::load_from_obj(std::istream& data) {
 	clear();
+	std::vector<glm::vec3> v_pos;
+	std::vector<glm::vec2> v_tex;
+	std::vector<glm::vec3> v_norm;
 	for (std::string line; std::getline(data, line);) {
 		std::istringstream ln(line);
 		std::string start;
 		ln >> start;
+		if (start == "v") {
+			float x, y, z;
+			ln >> x >> y >> z;
+			v_pos.push_back(glm::vec3(x, y, z));
+		} else if (start == "vt") {
+			float u, v;
+			ln >> u >> v;
+			v_tex.push_back(glm::vec2(u, v));
+		} else if (start == "vn") {
+			float x, y, z;
+			ln >> x >> y >> z;
+			v_norm.push_back(glm::vec3(x, y, z));
+		} else if (start == "f") {
+			std::string a, b, c;
+			ln >> a >> b >> c;
+			int i, t, n;   // tex, norm
+			vertex v1, v2, v3;
+			read_face(a, i, t, n);
+			v1.pos	= v_pos[i];
+			v1.uv	= v_tex[t];
+			v1.norm = v_norm[n];
+			read_face(b, i, t, n);
+			v2.pos	= v_pos[i];
+			v2.uv	= v_tex[t];
+			v2.norm = v_norm[n];
+			read_face(c, i, t, n);
+			v3.pos	= v_pos[i];
+			v3.uv	= v_tex[t];
+			v3.norm = v_norm[n];
+
+			int vi1, vi2, vi3;
+			vi1 = push_v(v1);
+			vi2 = push_v(v2);
+			vi3 = push_v(v3);
+			push_t(vi1, vi2, vi3);
+		}
 	}
+	gen();
 }
+
 void mesh::load_from_obj(const std::string& data) {
 	std::istringstream datastream(data);
 	return load_from_obj(datastream);
 }
 
-void mesh::push_v(vertex v) {
+void mesh::load_from_file(const std::string& file) {
+	std::ifstream f(file);
+	if (!f) {
+		throw std::runtime_error("Could not open file " + file);
+	}
+	load_from_obj(f);
+	f.close();
+}
+
+int mesh::push_v(vertex v) {
 	m_v.push_back(v);
+	return size() - 1;
 }
 
 void mesh::push_t(unsigned a, unsigned b, unsigned c) {

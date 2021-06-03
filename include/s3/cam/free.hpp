@@ -11,7 +11,7 @@ namespace s3::cams {
 /// free first-person style camera
 class free : public camera {
 public:
-	free(s3::window& w);
+	free();
 	~free();
 
 	/// updates based on key input
@@ -43,8 +43,6 @@ public:
 	glm::vec3 get_pos() const;
 
 private:
-	/// for attaching to key inputs
-	s3::window& m_win;
 	/// clock for measuring deltas between frames
 	util::clock m_clock;
 

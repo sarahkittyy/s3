@@ -7,12 +7,11 @@
 
 namespace s3::cams {
 
-free::free(s3::window& w)
-	: m_win(w),
-	  m_pos(0, 0, 0),
+free::free()
+	: m_pos(0, 0, 0),
 	  m_vel(0, 0, 0),
 	  m_facing(0, 0, -1.f),
-	  m_ob(w),
+	  m_ob(window()),
 	  m_mouse_x(0),
 	  m_mouse_y(0),
 	  m_mouse_px(0),
@@ -70,25 +69,25 @@ void free::update() {
 	}
 
 	/// key inputs
-	if (glfwGetKey(m_win.handle(), FORWARD_KEY) == GLFW_PRESS) {
+	if (glfwGetKey(window().handle(), FORWARD_KEY) == GLFW_PRESS) {
 		m_vel += glm::vec3(m_facing.x, 0, m_facing.z) * m_accel;
-	} else if (glfwGetKey(m_win.handle(), BACKWARD_KEY) == GLFW_PRESS) {
+	} else if (glfwGetKey(window().handle(), BACKWARD_KEY) == GLFW_PRESS) {
 		m_vel -= glm::vec3(m_facing.x, 0, m_facing.z) * m_accel;
 	} else {
 		m_vel = decel(m_vel, glm::vec3(m_facing.x, 0, m_facing.z));
 	}
 
-	if (glfwGetKey(m_win.handle(), LEFT_KEY) == GLFW_PRESS) {
+	if (glfwGetKey(window().handle(), LEFT_KEY) == GLFW_PRESS) {
 		m_vel -= glm::normalize(glm::cross(m_facing, UP)) * m_accel;
-	} else if (glfwGetKey(m_win.handle(), RIGHT_KEY) == GLFW_PRESS) {
+	} else if (glfwGetKey(window().handle(), RIGHT_KEY) == GLFW_PRESS) {
 		m_vel += glm::normalize(glm::cross(m_facing, UP)) * m_accel;
 	} else {
 		m_vel = decel(m_vel, glm::cross(m_facing, UP));
 	}
 
-	if (glfwGetKey(m_win.handle(), UP_KEY) == GLFW_PRESS) {
+	if (glfwGetKey(window().handle(), UP_KEY) == GLFW_PRESS) {
 		m_vel.y += m_accel;
-	} else if (glfwGetKey(m_win.handle(), DOWN_KEY) == GLFW_PRESS) {
+	} else if (glfwGetKey(window().handle(), DOWN_KEY) == GLFW_PRESS) {
 		m_vel.y -= m_accel;
 	} else {
 		m_vel = decel(m_vel, glm::vec3(0, 1, 0));
@@ -102,7 +101,7 @@ void free::update() {
 }
 
 glm::mat4 free::proj() const {
-	return glm::perspective(glm::radians(45.0f), m_win.size().x / m_win.size().y, 0.1f, 100.f);
+	return glm::perspective(glm::radians(45.0f), window().size().x / window().size().y, 0.1f, 100.f);
 }
 
 glm::mat4 free::view() const {

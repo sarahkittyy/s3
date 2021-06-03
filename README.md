@@ -6,7 +6,7 @@
 
 ## TODO
 
-- [ ] mesh loader from common file formats
+- [x] mesh loader from common file formats
 - [ ] sounds
 - [ ] common primitive shapes
 - [ ] lighting
