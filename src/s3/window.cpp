@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include <s3/camera.hpp>
+#include <s3/mouse.hpp>
 #include <s3/renderable.hpp>
 
 namespace s3 {
@@ -92,11 +93,12 @@ window::window(int width, int height, const char* title)
 		}
 	}
 
-	m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+
 	glfwMakeContextCurrent(m_window);
 
 	if (!initd) {
@@ -130,6 +132,7 @@ window::window(int width, int height, const char* title)
 	register_shader("default", shader());
 	shdr("default").set_uniform("model", glm::mat4(1.0f));
 
+	// TODO: abstract
 	m_ob.hook(evt::KEY_INPUT, [this](const evt::data& d) {
 		int key = d.get<int>("key");
 		int act = d.get<int>("action");
@@ -222,6 +225,10 @@ glm::vec2 window::pos() const {
 	int x, y;
 	glfwGetWindowPos(m_window, &x, &y);
 	return glm::vec2(x, y);
+}
+
+mouse window::get_mouse() {
+	return mouse(*this);
 }
 
 window& window::active() {

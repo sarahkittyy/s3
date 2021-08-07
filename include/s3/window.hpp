@@ -19,6 +19,7 @@ namespace s3 {
 
 class renderable;
 class camera;
+class mouse;
 
 /// primary window manager
 class window : public evt::emitter {
@@ -61,6 +62,9 @@ public:
 	glm::vec2 size() const;
 	/// absolute window position
 	glm::vec2 pos() const;
+
+	/// retrieve the mouse from this window instance
+	mouse get_mouse();
 
 	/// retrieve the active window
 	static window& active();
