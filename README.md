@@ -18,6 +18,7 @@
 - [x] events, hooks
 - [x] keyboard & mouse i/o
 - [x] test cases
+- [x] orbital camera
 - [ ] multi window support, with multi-threading capabilities
 - [ ] documentation detailing shader requirements
 - [ ] finalize how to provide access to the resource manager
