@@ -36,7 +36,7 @@ orbital::orbital()
 	m_ob.hook(evt::MOUSE_SCROLL, [this](const evt::data& d) {
 		float y = (float)d.get<double>("y");
 
-		set_dist(get_dist() + y);
+		set_dist(get_dist() - y);
 	});
 }
 
