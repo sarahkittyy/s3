@@ -16,6 +16,12 @@ public:
 		RELEASED = GLFW_RELEASE,
 	};
 
+	enum button {
+		LEFT   = GLFW_MOUSE_BUTTON_LEFT,
+		RIGHT  = GLFW_MOUSE_BUTTON_RIGHT,
+		MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
+	};
+
 	/// get the current mouse position
 	glm::vec2 get_pos();
 
@@ -25,6 +31,9 @@ public:
 	state right_btn();
 	/// get the state of the middle mouse button
 	state middle_btn();
+
+	/// get the state of the given button
+	state btn(button b);
 
 private:
 	friend class window;

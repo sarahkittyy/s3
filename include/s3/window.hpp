@@ -7,6 +7,7 @@
 #include <s3/color.hpp>
 #include <s3/drawstate.hpp>
 #include <s3/mesh.hpp>
+#include <s3/mouse.hpp>
 #include <s3/resource.hpp>
 #include <s3/shader.hpp>
 
@@ -19,7 +20,6 @@ namespace s3 {
 
 class renderable;
 class camera;
-class mouse;
 
 /// primary window manager
 class window : public evt::emitter {

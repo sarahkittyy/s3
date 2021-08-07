@@ -26,4 +26,8 @@ mouse::state mouse::middle_btn() {
 	return (state)glfwGetMouseButton(m_window.handle(), GLFW_MOUSE_BUTTON_MIDDLE);
 }
 
+mouse::state mouse::btn(button b) {
+	return (state)glfwGetMouseButton(m_window.handle(), (int)b);
+}
+
 }
