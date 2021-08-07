@@ -67,6 +67,9 @@ private:
 	/// is this the first time the mouse has moved?
 	bool m_first_mouse;
 
+	/// using m_facing and m_pos, update pitch and yaw. used primarily for set_pos
+	void update_pitch_yaw();
+
 	/* physics variables */
 	float m_accel;	 /// acceleration
 	float m_sens;	 /// mouse sens

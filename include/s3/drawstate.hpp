@@ -12,9 +12,6 @@ class drawstate {
 public:
 	drawstate();
 
-	/// default, empty draw state
-	static drawstate empty;
-
 	/// transform to be used as the model matrix in the defualt shader
 	s3::transform transform;
 	/// texture to be bound on render

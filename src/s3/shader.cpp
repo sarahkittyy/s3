@@ -55,6 +55,10 @@ shader::shader(const char* vs, const char* fs)
 	: m_vs(vs),
 	  m_fs(fs),
 	  m_prog(0) {
+	if (m_vs == nullptr && m_fs == nullptr) {
+		m_vs = vs_default;
+		m_fs = fs_default;
+	}
 	compile();
 }
 

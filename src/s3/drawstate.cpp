@@ -1,13 +1,13 @@
 #include "s3/drawstate.hpp"
 
-namespace s3 {
+#include <s3/window.hpp>
 
-drawstate drawstate::empty = drawstate();
+namespace s3 {
 
 drawstate::drawstate()
 	: transform(),
 	  texture(nullptr),
-	  shader(nullptr),
+	  shader(&window::resource().shader()),
 	  camera(nullptr) {
 }
 

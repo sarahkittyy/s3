@@ -29,3 +29,7 @@
 - [ ] documentation
 - [ ] parameters given to the window (face culling, etc)
 - [ ] skybox!
+
+## Known Issues
+
+- Changing freecam position causes a sudden jump when the mouse is next moved.
