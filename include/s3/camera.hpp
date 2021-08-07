@@ -1,9 +1,10 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <s3/window.hpp>
 
 namespace s3 {
+
+class window;
 
 /// abstract camera api for passing to the window and updating projection and view models
 class camera {

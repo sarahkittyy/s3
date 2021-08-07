@@ -1,5 +1,6 @@
 #pragma once
 
+#include <s3/camera.hpp>
 #include <s3/shader.hpp>
 #include <s3/texture.hpp>
 #include <s3/transform.hpp>
@@ -20,6 +21,8 @@ public:
 	s3::texture* texture;
 	/// shader to render this object with
 	s3::shader* shader;
+	/// camera to use
+	s3::camera* camera;
 };
 
 }

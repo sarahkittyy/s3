@@ -1,11 +1,10 @@
 #include "s3/renderable.hpp"
 
+#include <s3/rendertarget.hpp>
+
 namespace s3 {
 
 renderable::~renderable() {
-}
-
-void renderable::draw(window& w, drawstate ds) {
 }
 
 }

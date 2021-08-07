@@ -7,7 +7,8 @@ drawstate drawstate::empty = drawstate();
 drawstate::drawstate()
 	: transform(),
 	  texture(nullptr),
-	  shader(nullptr) {
+	  shader(nullptr),
+	  camera(nullptr) {
 }
 
 }

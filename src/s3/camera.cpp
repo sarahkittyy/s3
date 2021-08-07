@@ -2,6 +2,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <s3/window.hpp>
+
 namespace s3 {
 
 camera::camera() {

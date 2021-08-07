@@ -17,7 +17,7 @@ free::free()
 	  m_mouse_px(0),
 	  m_mouse_py(0),
 	  m_mouse_pitch(0),
-	  m_mouse_yaw(-90.f),
+	  m_mouse_yaw(0),
 	  m_first_mouse(true),
 	  m_accel(0.35f),
 	  m_sens(0.1f),
