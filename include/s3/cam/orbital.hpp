@@ -13,8 +13,8 @@ public:
 	orbital();
 	~orbital();
 
-	glm::mat4 proj() const;
-	glm::mat4 view() const;
+	glm::mat4 proj(const rendertarget& target) const;
+	glm::mat4 view(const rendertarget& target) const;
 
 	void update();
 

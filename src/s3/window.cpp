@@ -73,6 +73,7 @@ void glfw_mouse_scroll_cb(GLFWwindow* gl_win, double xoffset, double yoffset) {
 /// for when the window is resized
 void glfw_window_resize_cb(GLFWwindow* gl_win, int w, int h) {
 	window& win = *window::window_map[gl_win];
+	win.set_size(glm::vec2(w, h));
 	win.emit(evt::WINDOW_RESIZE,
 			 evt::data()
 				 .set("width", w)
@@ -83,10 +84,13 @@ void glfw_window_resize_cb(GLFWwindow* gl_win, int w, int h) {
 
 window::window(int width, int height, const char* title)
 	: windowbase(width, height, title),
+	  rendertarget(width, height),
 	  m_ob(*this) {
 
 	window_map[m_window] = this;
 	activate();
+
+	reset_opengl();
 
 	glfwSetKeyCallback(m_window, glfw_key_cb);
 	glfwSetCharCallback(m_window, glfw_text_cb);
@@ -111,10 +115,6 @@ window::~window() {
 
 void window::activate() {
 	active_window = this;
-}
-
-void window::clear(color col) {
-	flush(col);
 }
 
 void window::swap() {

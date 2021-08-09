@@ -100,11 +100,11 @@ void free::update() {
 	m_pos += m_vel * dt;
 }
 
-glm::mat4 free::proj() const {
-	return glm::perspective(glm::radians(45.0f), window().size().x / window().size().y, 0.1f, 100.f);
+glm::mat4 free::proj(const rendertarget& target) const {
+	return glm::perspective(glm::radians(45.0f), target.size().x / target.size().y, 0.1f, 100.f);
 }
 
-glm::mat4 free::view() const {
+glm::mat4 free::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_pos + m_facing, UP);
 }
 

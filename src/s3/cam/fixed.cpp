@@ -28,14 +28,14 @@ glm::vec3 fixed::get_aim() const {
 	return m_aim;
 }
 
-glm::mat4 fixed::proj() const {
+glm::mat4 fixed::proj(const rendertarget& target) const {
 	return glm::perspective(glm::radians(45.f),
-							window().size().x / window().size().y,
+							target.size().x / target.size().y,
 							0.1f,
 							100.f);
 }
 
-glm::mat4 fixed::view() const {
+glm::mat4 fixed::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_aim, glm::vec3(0, 1, 0));
 }
 

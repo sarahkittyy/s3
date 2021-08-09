@@ -27,8 +27,6 @@ public:
 	/// activate this window as the active one (for key inputs, etc)
 	void activate();
 
-	/// clear the screen
-	void clear(color col = color::from_ints(255, 255, 255));
 	/// render the frame
 	void swap();
 

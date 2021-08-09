@@ -30,6 +30,14 @@ public:
 	texture& operator=(const texture&) = delete;
 
 	/**
+	 * @brief creates an empty texture with the given width and height
+	 *
+	 * @param width
+	 * @param height
+	 */
+	virtual void create(int width, int height);
+
+	/**
 	 * @brief load a texture given a file path
 	 *
 	 * @param path the path to the file
@@ -72,9 +80,26 @@ public:
 	 */
 	void bind();
 
+	/**
+	 * @brief retrieve the internal opengl texture id
+	 *
+	 * @return GLuint the texture ID
+	 */
+	GLuint handle();
+
 private:
 	GLuint m_tex;	/// opengl texture
 	int m_w, m_h;	/// texture dimensions
+
+	filter_mode m_f;	/// filter mode
+	color m_bc;			/// border color
+	wrap_mode m_wrap;	/// wrap mode
+
+	/**
+	 * @brief update the texture params based on the saved values
+	 *
+	 */
+	void update_tex_params();
 };
 
 }

@@ -38,12 +38,6 @@ bool windowbase::should_close() const {
 	return glfwWindowShouldClose(m_window);
 }
 
-glm::vec2 windowbase::size() const {
-	int x, y;
-	glfwGetWindowSize(m_window, &x, &y);
-	return glm::vec2(x, y);
-}
-
 glm::vec2 windowbase::pos() const {
 	int x, y;
 	glfwGetWindowPos(m_window, &x, &y);

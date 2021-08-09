@@ -2,6 +2,7 @@
 
 #include <s3/mesh.hpp>
 #include <s3/mouse.hpp>
+#include <s3/rendertexture.hpp>
 #include <s3/resource.hpp>
 #include <s3/shader.hpp>
 #include <s3/window.hpp>

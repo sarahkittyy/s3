@@ -15,8 +15,6 @@ public:
 	/// returns true when the window should close.
 	bool should_close() const;
 
-	/// window size, in pixels.
-	glm::vec2 size() const;
 	/// absolute window position
 	glm::vec2 pos() const;
 

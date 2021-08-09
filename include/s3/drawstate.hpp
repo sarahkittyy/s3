@@ -7,6 +7,10 @@
 
 namespace s3 {
 
+class texture;
+class shader;
+class camera;
+
 /// stores the state of a render (shader, texture, etc)
 class drawstate {
 public:

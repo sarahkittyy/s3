@@ -24,8 +24,8 @@ public:
 	/// retrieve the position the camera is looking at
 	glm::vec3 get_aim() const;
 
-	glm::mat4 proj() const;
-	glm::mat4 view() const;
+	glm::mat4 proj(const rendertarget& target) const;
+	glm::mat4 view(const rendertarget& target) const;
 
 private:
 	glm::vec3 m_pos;   /// camera position

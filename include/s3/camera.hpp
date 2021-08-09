@@ -5,6 +5,7 @@
 namespace s3 {
 
 class window;
+class rendertarget;
 
 /// abstract camera api for passing to the window and updating projection and view models
 class camera {
@@ -13,9 +14,9 @@ public:
 	virtual ~camera();
 
 	/// returns a custom projection matrix based on the camera's settings
-	virtual glm::mat4 proj() const;
+	virtual glm::mat4 proj(const rendertarget& target) const;
 	/// returns a custom view matrix based on the camera's projection settings
-	virtual glm::mat4 view() const;
+	virtual glm::mat4 view(const rendertarget& target) const;
 
 	/// useful for updating, i.e. moving the camera based on input
 	virtual void update();

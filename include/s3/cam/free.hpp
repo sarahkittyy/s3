@@ -17,8 +17,8 @@ public:
 	/// updates based on key input
 	void update();
 
-	glm::mat4 proj() const;
-	glm::mat4 view() const;
+	glm::mat4 proj(const rendertarget& target) const;
+	glm::mat4 view(const rendertarget& target) const;
 
 	/// lower values = slower camera turning. default 0.1.
 	void set_sens(float sens);

@@ -23,7 +23,7 @@
 - [ ] documentation detailing shader requirements
 - [ ] finalize how to provide access to the resource manager
 - [ ] 2d rendering support
-- [ ] framebuffers, abstract rendertarget
+- [x] framebuffers, abstract rendertarget
 - [ ] ui support
 - [ ] compute shaders
 - [ ] documentation
@@ -33,3 +33,4 @@
 ## Known Issues
 
 - Changing freecam position causes a sudden jump when the mouse is next moved.
+- Pointing freecam straight down causes W and S movement acceleration to become painfully slow.

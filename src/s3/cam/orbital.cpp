@@ -68,11 +68,11 @@ void orbital::update() {
 	update_pos();
 }
 
-glm::mat4 orbital::proj() const {
-	return glm::perspective(glm::radians(45.f), window().size().x / window().size().y, 0.1f, 100.f);
+glm::mat4 orbital::proj(const rendertarget& target) const {
+	return glm::perspective(glm::radians(45.f), target.size().x / target.size().y, 0.1f, 100.f);
 }
 
-glm::mat4 orbital::view() const {
+glm::mat4 orbital::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_center, glm::vec3(0, 1, 0));
 }
 
