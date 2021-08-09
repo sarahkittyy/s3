@@ -29,6 +29,7 @@
 - [ ] documentation
 - [ ] parameters given to the window (face culling, etc)
 - [ ] skybox!
+- [ ] more intricate documentation, fixing inconsistency in commenting style
 
 ## Known Issues
 
