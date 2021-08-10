@@ -70,9 +70,9 @@ void free::update() {
 
 	/// key inputs
 	if (glfwGetKey(window().handle(), FORWARD_KEY) == GLFW_PRESS) {
-		m_vel += glm::vec3(m_facing.x, 0, m_facing.z) * m_accel;
+		m_vel += glm::normalize(glm::vec3(m_facing.x, 0, m_facing.z)) * m_accel;
 	} else if (glfwGetKey(window().handle(), BACKWARD_KEY) == GLFW_PRESS) {
-		m_vel -= glm::vec3(m_facing.x, 0, m_facing.z) * m_accel;
+		m_vel -= glm::normalize(glm::vec3(m_facing.x, 0, m_facing.z)) * m_accel;
 	} else {
 		m_vel = decel(m_vel, glm::vec3(m_facing.x, 0, m_facing.z));
 	}
