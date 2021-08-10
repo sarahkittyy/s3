@@ -145,7 +145,11 @@ void free::set_dir(float pitch, float yaw) {
 }
 
 void free::set_pos(glm::vec3 pos) {
-	m_pos = pos;
+	m_pos		  = pos;
+	glm::vec3 d	  = m_facing - pos;
+	m_mouse_pitch = glm::degrees(std::asin(d.y / glm::length(d)));
+	m_mouse_yaw	  = glm::degrees(std::atan2(d.z, d.x));
+	set_dir(m_mouse_pitch, m_mouse_yaw);
 }
 
 glm::vec3 free::get_pos() const {

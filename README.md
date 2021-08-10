@@ -33,5 +33,5 @@
 
 ## Known Issues
 
-- Changing freecam position causes a sudden jump when the mouse is next moved.
+- ~~Changing freecam position causes a sudden jump when the mouse is next moved.~~
 - Pointing freecam straight down causes W and S movement acceleration to become painfully slow.

@@ -20,7 +20,7 @@ void texture::create(int width, int height) {
 	glGenTextures(1, &m_tex);
 	bind();
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
 	update_tex_params();
 }
@@ -34,7 +34,7 @@ void texture::from_file(const std::string& path) {
 	if (!data) throw std::runtime_error("Could not load image " + path + ".");
 
 	int fmt = ch == 4 ? GL_RGBA : GL_RGB;
-	glTexImage2D(GL_TEXTURE_2D, 0, fmt, m_w, m_h, 0, fmt, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_w, m_h, 0, fmt, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(data);
 
