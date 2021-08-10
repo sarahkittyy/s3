@@ -39,6 +39,9 @@ public:
 
 	static s3::resource& resource();
 
+	/// the default s3 shader
+	static s3::shader& default_shader();
+
 private:
 	static s3::resource m_r;   /// the app's resource manager
 

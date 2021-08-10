@@ -1,7 +1,10 @@
 #include "s3/shader.hpp"
 
 #include <glm/glm.hpp>
+
 #include <stdexcept>
+
+#include <s3/uniformstruct.hpp>
 
 namespace s3 {
 
@@ -16,15 +19,17 @@ out vec3 posV;
 out vec2 uvV;
 out vec3 normV;
 
-uniform mat4 mvp;
-uniform mat3 norm_mvp;
+uniform mat4 model;
+uniform mat3 norm_model;
+uniform mat4 view;
+uniform mat4 proj;
 
 void main() {
-	gl_Position = mvp * vec4(pos, 1.0);
+	gl_Position = proj * view * model * vec4(pos, 1.0);
 
-	posV = pos;
+	posV = vec3(model * vec4(pos, 1.0));
 	uvV = uv;
-	normV = norm_mvp * norm;
+	normV = norm_model * norm;
 }
 )shader";
 
@@ -39,10 +44,49 @@ out vec4 color;
 
 uniform sampler2D tex;
 
+// camera position
+uniform vec3 cam;
+
+struct Material {
+	sampler2D diffuse; // texture
+	sampler2D specular; // specular mapping
+	float shininess;
+};
+uniform Material material;
+
+struct Light {
+	vec3 position;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform Light light;
+
 void main() {
-	color = texture(tex, uvV);
+	vec3 lightDir = normalize(light.position - posV);
+	vec3 camDir = normalize(cam - posV);
+	vec3 halfDir = normalize(lightDir + camDir);
+
+	float diff = max(dot(normV, lightDir), 0.0);
+	float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, uvV));
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, uvV));
+	vec3 specular = light.specular * spec * vec3(texture(material.specular, uvV));
+
+	vec3 phong = ambient + diffuse + specular;
+
+	color = vec4(phong, 1.0);
 }
 )shader";
+
+//////////////////////// SHADER UNIFORM TEMPLATES /////////////////////////////
+
+template <>
+void shader::set_uniform(const char* name, const uniformstruct& data) {
+	data.populate(name, *this);
+}
 
 template <>
 void shader::set_uniform(const char* name, const glm::mat4& data) {
@@ -55,6 +99,32 @@ void shader::set_uniform(const char* name, const glm::mat3& data) {
 	int loc = glGetUniformLocation(m_prog, name);
 	glUniformMatrix3fv(loc, 1, GL_FALSE, &data[0][0]);
 }
+
+template <>
+void shader::set_uniform(const char* name, const glm::vec4& data) {
+	int loc = glGetUniformLocation(m_prog, name);
+	glUniform4fv(loc, 1, &data[0]);
+}
+
+template <>
+void shader::set_uniform(const char* name, const glm::vec3& data) {
+	int loc = glGetUniformLocation(m_prog, name);
+	glUniform3fv(loc, 1, &data[0]);
+}
+
+template <>
+void shader::set_uniform(const char* name, const GLfloat& data) {
+	int loc = glGetUniformLocation(m_prog, name);
+	glUniform1fv(loc, 1, &data);
+}
+
+template <>
+void shader::set_uniform(const char* name, const GLint& data) {
+	int loc = glGetUniformLocation(m_prog, name);
+	glUniform1iv(loc, 1, &data);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 shader::shader(const char* vs, const char* fs)
 	: m_vs(vs),

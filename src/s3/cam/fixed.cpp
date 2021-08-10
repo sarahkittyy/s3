@@ -39,4 +39,8 @@ glm::mat4 fixed::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_aim, glm::vec3(0, 1, 0));
 }
 
+glm::vec3 fixed::position() const {
+	return m_pos;
+}
+
 }

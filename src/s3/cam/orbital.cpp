@@ -76,6 +76,10 @@ glm::mat4 orbital::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_center, glm::vec3(0, 1, 0));
 }
 
+glm::vec3 orbital::position() const {
+	return m_pos;
+}
+
 void orbital::update_pos() {
 	m_pos.x =
 		m_center.x +

@@ -9,7 +9,7 @@
 - [x] mesh loader from common file formats
 - [ ] sounds
 - [ ] common primitive shapes
-- [ ] lighting
+- [x] lighting
 - [ ] shadows
 - [ ] transparency
 - [ ] billboard template container
@@ -33,6 +33,8 @@
 - [ ] more intricate documentation, fixing inconsistency in commenting style
 - [ ] copyable opengl objects (VAOs, VBOs, textures, shaders, meshes)
 - [ ] meta-headers for grouping headers
+- [ ] refactor camera get_pos() and position() confusion
+- [ ] sort out surfaceable, transformable, etc, into prop:: namespace
 
 ## Known Issues
 

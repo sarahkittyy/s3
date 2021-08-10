@@ -1,0 +1,14 @@
+#include "s3/surfaceable.hpp"
+
+namespace s3 {
+
+surfaceable::surfaceable() {
+}
+
+surfaceable::~surfaceable() {
+}
+
+void surfaceable::set_material(const light::material& m) {
+}
+
+}

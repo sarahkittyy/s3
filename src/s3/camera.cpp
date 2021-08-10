@@ -23,6 +23,10 @@ glm::mat4 camera::view(const rendertarget& target) const {
 	return glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 }
 
+glm::vec3 camera::position() const {
+	return glm::vec3(0, 0, 0);
+}
+
 void camera::update() {
 }
 

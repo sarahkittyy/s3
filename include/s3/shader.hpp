@@ -4,6 +4,8 @@
 
 namespace s3 {
 
+class uniformstruct;
+
 /**
  * @brief class for managing, compiling, and loading shaders.
  */

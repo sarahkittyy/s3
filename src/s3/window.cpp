@@ -138,4 +138,8 @@ s3::resource& window::resource() {
 	return m_r;
 }
 
+s3::shader& window::default_shader() {
+	return resource().shader();
+}
+
 }

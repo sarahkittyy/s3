@@ -14,6 +14,7 @@ texture::texture()
 	  m_f(filter_mode::LINEAR),
 	  m_bc(),
 	  m_wrap(wrap_mode::CLAMP_TO_EDGE) {
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 texture::~texture() {
@@ -72,8 +73,14 @@ void texture::set_wrap_mode(wrap_mode m) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLenum)m);
 }
 
-void texture::bind() const {
+void texture::bind(int unit) const {
+	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, m_tex);
+}
+
+void texture::unbind(int unit) {
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GLuint texture::handle() const {

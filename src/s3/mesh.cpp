@@ -161,6 +161,46 @@ int mesh::size() const {
 	return m_v.size();
 }
 
+void mesh::draw(rendertarget& target, drawstate ds) {
+	//! prioritize drawstate material, shaders, etc. over this object's settings
+
+	target.bind();
+
+	ds.transform *= transform();
+
+	if (ds.shader) {
+		ds.shader->use();
+	} else {
+		throw std::runtime_error("Cannot render without a shader!");
+	}
+	if (ds.camera) {
+		ds.camera->update();
+		ds.shader->set_uniform("view", ds.camera->view(target));
+		ds.shader->set_uniform("proj", ds.camera->proj(target));
+		ds.shader->set_uniform("cam", ds.camera->position());
+	} else {
+		throw std::runtime_error("Cannot render without a camera!");
+	}
+	if (ds.material) {
+		ds.material->populate("material", *ds.shader);
+	} else if (material()) {
+		material()->populate("material", *ds.shader);
+	} else {
+		s3::material().populate("material", *ds.shader);
+	}
+	if (ds.light) {
+		ds.light->populate("light", *ds.shader);
+	} else {
+		light::light().populate("light", *ds.shader);
+	}
+
+	glm::mat4 model = ds.transform.matrix();
+	ds.shader->set_uniform("model", model);
+	ds.shader->set_uniform("norm_model", glm::mat3(glm::transpose(glm::inverse(model))));
+
+	gl_draw();
+}
+
 void mesh::gl_draw() {
 	bind();
 	glDrawElements(m_prim, m_e.size(), GL_UNSIGNED_INT, nullptr);

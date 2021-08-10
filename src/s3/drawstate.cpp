@@ -6,9 +6,10 @@ namespace s3 {
 
 drawstate::drawstate()
 	: transform(),
-	  texture(nullptr),
 	  shader(&window::resource().shader()),
-	  camera(nullptr) {
+	  camera(nullptr),
+	  material(nullptr),
+	  light(nullptr) {
 }
 
 }

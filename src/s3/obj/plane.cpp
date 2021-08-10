@@ -9,8 +9,8 @@ plane::plane(glm::vec3 top_left, glm::vec2 size)
 }
 
 void plane::draw(rendertarget& target, drawstate ds) {
-	ds.texture = texture();
 	ds.transform *= transform();
+	ds.material = material();
 	target.draw(m_mesh, ds);
 }
 

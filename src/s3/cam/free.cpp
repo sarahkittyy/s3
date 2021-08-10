@@ -108,6 +108,10 @@ glm::mat4 free::view(const rendertarget& target) const {
 	return glm::lookAt(m_pos, m_pos + m_facing, UP);
 }
 
+glm::vec3 free::position() const {
+	return m_pos;
+}
+
 void free::set_sens(float sens) {
 	m_sens = sens;
 }

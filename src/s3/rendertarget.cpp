@@ -26,29 +26,6 @@ void rendertarget::draw(renderable& d, drawstate ds) {
 	d.draw(*this, ds);
 }
 
-void rendertarget::draw(mesh& m, drawstate ds) {
-	bind();
-	if (ds.shader) {
-		ds.shader->use();
-	} else {
-		throw std::runtime_error("Cannot render without a shader!");
-	}
-	if (ds.texture) {
-		ds.texture->bind();
-	} else {
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	if (ds.camera) {
-		ds.camera->update();
-	} else {
-		throw std::runtime_error("Cannot render without a camera!");
-	}
-	glm::mat4 mvp = ds.camera->proj(*this) * ds.camera->view(*this) * ds.transform.matrix();
-	ds.shader->set_uniform("mvp", mvp);
-	ds.shader->set_uniform("norm_mvp", glm::mat3(glm::transpose(glm::inverse(mvp))));
-	m.gl_draw();
-}
-
 glm::vec2 rendertarget::size() const {
 	return glm::vec2(m_width, m_height);
 }

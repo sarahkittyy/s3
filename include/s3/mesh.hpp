@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+#include <s3/renderable.hpp>
+#include <s3/surfaceable.hpp>
+#include <s3/transformable.hpp>
+
 namespace s3 {
 
 class rendertarget;
@@ -19,9 +23,8 @@ enum primitive {
 	TRIANGLEFAN	  = GL_TRIANGLE_FAN,
 };
 
-
 /// mesh for holding 3d vertex data
-class mesh {
+class mesh : public renderable, public surfaceable, public transformable {
 public:
 	mesh();
 	virtual ~mesh();
@@ -58,7 +61,7 @@ public:
 	int size() const;
 
 private:
-	friend class rendertarget;
+	void draw(rendertarget& target, drawstate ds);
 
 	void gl_draw();	  /// render the mesh
 

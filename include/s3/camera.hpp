@@ -18,6 +18,9 @@ public:
 	/// returns a custom view matrix based on the camera's projection settings
 	virtual glm::mat4 view(const rendertarget& target) const;
 
+	/// retrieve the camera's position
+	virtual glm::vec3 position() const;
+
 	/// useful for updating, i.e. moving the camera based on input
 	virtual void update();
 

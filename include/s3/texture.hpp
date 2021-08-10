@@ -73,8 +73,17 @@ public:
 
 	/**
 	 * @brief bind the texture for use
+	 * 
+	 * @param unit the texture unit to bind this to
 	 */
-	void bind() const;
+	void bind(int unit = 0) const;
+
+	/**
+	 * @brief bind an empty texture to the given unit
+	 *
+	 * @param unit the texture unit to clear
+	 */
+	static void unbind(int unit = 0);
 
 	/**
 	 * @brief retrieve the internal opengl texture id

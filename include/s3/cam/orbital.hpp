@@ -15,6 +15,7 @@ public:
 
 	glm::mat4 proj(const rendertarget& target) const;
 	glm::mat4 view(const rendertarget& target) const;
+	glm::vec3 position() const;
 
 	void update();
 
