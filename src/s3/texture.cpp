@@ -16,6 +16,10 @@ texture::texture()
 	  m_wrap(wrap_mode::CLAMP_TO_EDGE) {
 }
 
+texture::~texture() {
+	glDeleteTextures(1, &m_tex);
+}
+
 void texture::create(int width, int height) {
 	glGenTextures(1, &m_tex);
 	bind();
@@ -68,16 +72,12 @@ void texture::set_wrap_mode(wrap_mode m) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLenum)m);
 }
 
-void texture::bind() {
+void texture::bind() const {
 	glBindTexture(GL_TEXTURE_2D, m_tex);
 }
 
-GLuint texture::handle() {
+GLuint texture::handle() const {
 	return m_tex;
-}
-
-void texture::del() {
-	glDeleteTextures(1, &m_tex);
 }
 
 glm::vec2 texture::size() const {

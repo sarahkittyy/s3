@@ -28,8 +28,11 @@
 - [ ] compute shaders
 - [ ] documentation
 - [ ] parameters given to the window (face culling, etc)
+- [ ] per-renderable opengl settings (face culling, etc)
 - [ ] skybox!
 - [ ] more intricate documentation, fixing inconsistency in commenting style
+- [ ] copyable opengl objects (VAOs, VBOs, textures, shaders, meshes)
+- [ ] meta-headers for grouping headers
 
 ## Known Issues
 

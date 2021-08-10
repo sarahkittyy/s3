@@ -22,7 +22,7 @@ s3::shader& resource::shader(const char* vs, const char* fs) {
 	ss << (const void*)fs;
 	std::string key = ss.str();
 	if (!m_shdr.contains(key)) {
-		m_shdr[key] = s3::shader(vs, fs);
+		m_shdr.emplace(key, s3::shader(vs, fs));
 	}
 	return m_shdr[key];
 }

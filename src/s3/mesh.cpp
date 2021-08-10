@@ -23,7 +23,7 @@ mesh::mesh()
 	clear();
 }
 
-void mesh::del() {
+mesh::~mesh() {
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ebo);
 	glDeleteVertexArrays(1, &m_vao);
@@ -40,6 +40,14 @@ void mesh::clear() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
+}
+
+void mesh::set_primitive_type(primitive p) {
+	m_prim = p;
+}
+
+primitive mesh::get_primitive_type() const {
+	return m_prim;
 }
 
 /// reads in position, uv, and norm data from a .obj format face specifier
@@ -153,7 +161,7 @@ int mesh::size() const {
 	return m_v.size();
 }
 
-void mesh::draw() {
+void mesh::gl_draw() {
 	bind();
 	glDrawElements(m_prim, m_e.size(), GL_UNSIGNED_INT, nullptr);
 }

@@ -16,16 +16,15 @@ out vec3 posV;
 out vec2 uvV;
 out vec3 normV;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
+uniform mat4 mvp;
+uniform mat3 norm_mvp;
 
 void main() {
-	gl_Position = proj * view * model * vec4(pos, 1.0);
+	gl_Position = mvp * vec4(pos, 1.0);
 
 	posV = pos;
 	uvV = uv;
-	normV = norm;
+	normV = norm_mvp * norm;
 }
 )shader";
 
@@ -46,9 +45,15 @@ void main() {
 )shader";
 
 template <>
-void shader::set_uniform(const char* name, const glm::mat4&& data) {
+void shader::set_uniform(const char* name, const glm::mat4& data) {
 	int loc = glGetUniformLocation(m_prog, name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &data[0][0]);
+}
+
+template <>
+void shader::set_uniform(const char* name, const glm::mat3& data) {
+	int loc = glGetUniformLocation(m_prog, name);
+	glUniformMatrix3fv(loc, 1, GL_FALSE, &data[0][0]);
 }
 
 shader::shader(const char* vs, const char* fs)
@@ -69,12 +74,23 @@ shader::shader()
 	compile();
 }
 
-void shader::del() {
-	glDeleteProgram(m_prog);
+shader::shader(shader&& other) noexcept
+	: m_vs(other.m_vs),
+	  m_fs(other.m_fs),
+	  m_prog(other.m_prog) {
+	other.m_vs	 = nullptr;
+	other.m_fs	 = nullptr;
+	other.m_prog = 0;
+}
+
+shader::~shader() {
+	if (m_prog != 0) {
+		glDeleteProgram(m_prog);
+	}
 }
 
 void shader::compile() {
-	if (m_prog != 0) del();
+	if (m_prog != 0) glDeleteProgram(m_prog);
 
 	GLuint vs, fs;
 	int success;

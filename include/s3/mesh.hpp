@@ -7,6 +7,8 @@
 
 namespace s3 {
 
+class rendertarget;
+
 enum primitive {
 	POINTS		  = GL_POINTS,
 	LINES		  = GL_LINES,
@@ -22,15 +24,19 @@ enum primitive {
 class mesh {
 public:
 	mesh();
+	virtual ~mesh();
 
-	/// delete internal opengl vertex data
-	void del();
-
+	/// non-copyable to prevent deleting internal vertex data
 	mesh(const mesh&) = delete;
 	mesh& operator=(const mesh&) = delete;
 
 	/// clear the entire mesh of all vertices
 	void clear();
+
+	/// set the vertex array type
+	void set_primitive_type(primitive p);
+	/// retrieve the primitive array type
+	primitive get_primitive_type() const;
 
 	/// load the mesh data from a OBJ formatted model
 	void load_from_obj(std::istream& data);
@@ -51,10 +57,11 @@ public:
 	/// count how many vertices are in this mesh
 	int size() const;
 
-	/// render the mesh
-	void draw();
-
 private:
+	friend class rendertarget;
+
+	void gl_draw();	  /// render the mesh
+
 	std::vector<vertex> m_v;		 /// stored vertices
 	std::vector<unsigned int> m_e;	 /// stored element indices
 	primitive m_prim;				 /// primitive type

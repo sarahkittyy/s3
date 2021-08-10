@@ -3,7 +3,7 @@
 namespace s3 {
 
 s3::transform& transformable::transform() {
-	return m_tf;
+	return *this;
 }
 
 }

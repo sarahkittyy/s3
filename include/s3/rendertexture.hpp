@@ -9,6 +9,7 @@ namespace s3 {
 class rendertexture : public rendertarget, public texture {
 public:
 	rendertexture(int width, int height);
+	~rendertexture();
 
 	rendertexture(const rendertexture&) = delete;
 	rendertexture& operator=(const rendertexture&) = delete;

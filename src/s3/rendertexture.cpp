@@ -6,7 +6,8 @@ namespace s3 {
 
 rendertexture::rendertexture(int width, int height)
 	: rendertarget(width, height),
-	  m_fbo(0) {
+	  m_fbo(0),
+	  m_rbo(0) {
 	glGenFramebuffers(1, &m_fbo);
 
 	rendertexture::bind();
@@ -24,18 +25,13 @@ rendertexture::rendertexture(int width, int height)
 	if (!valid()) throw std::runtime_error("Failure initializing rendertexture.");
 }
 
-void rendertexture::del() {
-	if (m_fbo == 0) {
-		throw std::runtime_error("Cannot delete framebuffer of id 0 (maybe you forgot to call create()?)");
+rendertexture::~rendertexture() {
+	if (m_fbo != 0) {
+		glDeleteFramebuffers(1, &m_fbo);
 	}
-	glDeleteFramebuffers(1, &m_fbo);
-
-	if (m_rbo == 0) {
-		throw std::runtime_error("Cannot delete renderbuffer of id 0 (maybe you forgot to call create()?)");
+	if (m_rbo != 0) {
+		glDeleteRenderbuffers(1, &m_rbo);
 	}
-	glDeleteRenderbuffers(1, &m_rbo);
-
-	texture::del();
 }
 
 void rendertexture::bind() {

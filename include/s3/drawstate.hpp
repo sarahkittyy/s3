@@ -19,7 +19,7 @@ public:
 	/// transform to be used as the model matrix in the defualt shader
 	s3::transform transform;
 	/// texture to be bound on render
-	s3::texture* texture;
+	const s3::texture* texture;
 	/// shader to render this object with
 	s3::shader* shader;
 	/// camera to use

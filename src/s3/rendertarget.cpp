@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include <s3/renderable.hpp>
+
 namespace s3 {
 
 rendertarget::rendertarget(int width, int height)
@@ -38,13 +40,13 @@ void rendertarget::draw(mesh& m, drawstate ds) {
 	}
 	if (ds.camera) {
 		ds.camera->update();
-		ds.shader->set_uniform("proj", ds.camera->proj(*this));
-		ds.shader->set_uniform("view", ds.camera->view(*this));
 	} else {
 		throw std::runtime_error("Cannot render without a camera!");
 	}
-	ds.shader->set_uniform("model", ds.transform.matrix());
-	m.draw();
+	glm::mat4 mvp = ds.camera->proj(*this) * ds.camera->view(*this) * ds.transform.matrix();
+	ds.shader->set_uniform("mvp", mvp);
+	ds.shader->set_uniform("norm_mvp", glm::mat3(glm::transpose(glm::inverse(mvp))));
+	m.gl_draw();
 }
 
 glm::vec2 rendertarget::size() const {

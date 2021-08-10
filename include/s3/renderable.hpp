@@ -1,14 +1,12 @@
 #pragma once
 
 #include <s3/drawstate.hpp>
-#include <s3/transformable.hpp>
+#include <s3/rendertarget.hpp>
 
 namespace s3 {
 
-class rendertarget;
-
 /// abstract class to describe an object as renderable
-class renderable : public transformable {
+class renderable {
 public:
 	virtual ~renderable();
 

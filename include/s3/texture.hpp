@@ -25,6 +25,7 @@ enum class filter_mode {
 class texture {
 public:
 	texture();
+	~texture();
 
 	texture(const texture&) = delete;
 	texture& operator=(const texture&) = delete;
@@ -43,11 +44,6 @@ public:
 	 * @param path the path to the file
 	 */
 	void from_file(const std::string& path);
-
-	/**
-	 * @brief delete internal opengl data
-	 */
-	void del();
 
 	/**
 	 * @brief set opengl's texture filtering mode
@@ -78,14 +74,14 @@ public:
 	/**
 	 * @brief bind the texture for use
 	 */
-	void bind();
+	void bind() const;
 
 	/**
 	 * @brief retrieve the internal opengl texture id
 	 *
 	 * @return GLuint the texture ID
 	 */
-	GLuint handle();
+	GLuint handle() const;
 
 private:
 	GLuint m_tex;	/// opengl texture

@@ -23,9 +23,19 @@ public:
 	shader();
 
 	/**
-	 * @brief delete the internal shader data structures
+	 * @brief deconstructs all internal opengl data
+	 *
 	 */
-	void del();
+	~shader();
+
+	shader(const shader&) = delete;
+	shader& operator=(const shader&) = delete;
+
+	/**
+	 * @brief move constructor
+	 *
+	 */
+	shader(shader&& other) noexcept;
 
 	/**
 	 * @brief set this shader as active and use it for rendering
@@ -44,7 +54,7 @@ public:
 	 * @param data the value to copy over
 	 */
 	template <typename T>
-	void set_uniform(const char* name, const T&& data);
+	void set_uniform(const char* name, const T& data);
 
 private:
 	const char *m_vs, *m_fs;   /// shader sources
