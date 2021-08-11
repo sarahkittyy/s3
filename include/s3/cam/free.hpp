@@ -26,12 +26,12 @@ public:
 	/// retrieve the mouse sensitivity
 	float get_sens() const;
 
-	/// lower values = slower WASD camera acceleration.
+	/// lower values = slower WASD camera acceleration. default 0.35
 	void set_accel(float accel);
 	/// retrieve the movement acceleration
 	float get_accel() const;
 
-	/// lower values = slower WASD maximum movement speed.
+	/// lower values = slower WASD maximum movement speed. default 3.0f
 	void set_maxvel(float mvel);
 	/// retrieve the maximummovement velocity
 	float get_maxvel() const;

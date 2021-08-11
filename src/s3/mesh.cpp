@@ -32,6 +32,7 @@ mesh::~mesh() {
 void mesh::clear() {
 	m_v.clear();
 	m_e.clear();
+	m_materials.clear();
 
 	bind();
 
@@ -110,6 +111,14 @@ void mesh::load_from_obj(std::istream& data) {
 			vi2 = push_v(v2);
 			vi3 = push_v(v3);
 			push_t(vi1, vi2, vi3);
+		} else if (start == "mtllib") {
+			std::string path;
+			ln >> path;
+			load_mtl_library(path);
+		} else if (start == "usemtl") {
+			std::string mtl_name;
+			ln >> mtl_name;
+			*material() = m_materials[mtl_name];
 		}
 	}
 	gen();
@@ -126,6 +135,46 @@ void mesh::load_from_file(const std::string& file) {
 		throw std::runtime_error("Could not open file " + file);
 	}
 	load_from_obj(f);
+	f.close();
+}
+
+void mesh::load_mtl_library(const std::string& path) {
+	std::ifstream f(path);
+	if (!f) {
+		throw std::runtime_error("Could not open file " + path);
+	}
+	std::string current_mtl_name = "";	 // currently worked on material
+	s3::material current_mtl;
+	for (std::string line; std::getline(f, line);) {
+		std::istringstream ln(line);
+		std::string start;
+		ln >> start;
+		if (start == "newmtl") {
+			if (!current_mtl_name.empty()) {
+				m_materials[current_mtl_name] = current_mtl;
+				current_mtl.clear();
+				current_mtl_name.clear();
+			}
+			ln >> current_mtl_name;
+		} else if (start == "Ns") {
+			float shininess;
+			ln >> shininess;
+			current_mtl.set_shininess(shininess);
+		} else if (start == "map_Kd") {
+			std::string diffuse_path;
+			ln >> diffuse_path;
+			current_mtl.set_diffuse(s3::window::resource().texture(diffuse_path));
+		} else if (start == "map_Ns") {
+			std::string specular_path;
+			ln >> specular_path;
+			current_mtl.set_specular(s3::window::resource().texture(specular_path));
+		} else if (start == "map_Ke") {
+			std::string emission_path;
+			ln >> emission_path;
+			current_mtl.set_emission(s3::window::resource().texture(emission_path));
+		}
+	}
+	m_materials[current_mtl_name] = current_mtl;
 	f.close();
 }
 

@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include <s3/color.hpp>
 #include <s3/uniformstruct.hpp>
 
 namespace s3::light {
@@ -19,19 +20,19 @@ public:
 	glm::vec3 get_pos() const;
 
 	/// set the ambient color
-	void set_ambient(glm::vec3 ambient);
+	void set_ambient(color ambient);
 	/// retrieve the ambient color
-	glm::vec3 get_ambient() const;
+	color get_ambient() const;
 
 	/// set the diffuse color
-	void set_diffuse(glm::vec3 diffuse);
+	void set_diffuse(color diffuse);
 	/// retrieve the diffuse color
-	glm::vec3 get_diffuse() const;
+	color get_diffuse() const;
 
 	/// set the specular color
-	void set_specular(glm::vec3 specular);
+	void set_specular(color specular);
 	/// retrieve the specular color
-	glm::vec3 get_specular() const;
+	color get_specular() const;
 
 	void populate(const char* context, shader& s) const;
 
@@ -40,9 +41,9 @@ private:
 	glm::vec3 m_position;
 
 	/// light properties
-	glm::vec3 m_ambient;
-	glm::vec3 m_diffuse;
-	glm::vec3 m_specular;
+	color m_ambient;
+	color m_diffuse;
+	color m_specular;
 };
 
 }

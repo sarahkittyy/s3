@@ -50,6 +50,7 @@ uniform vec3 cam;
 struct Material {
 	sampler2D diffuse; // texture
 	sampler2D specular; // specular mapping
+	sampler2D emission; // optional emission mapping
 	float shininess;
 };
 uniform Material material;
@@ -71,11 +72,20 @@ void main() {
 	float diff = max(dot(normV, lightDir), 0.0);
 	float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
 
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, uvV));
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, uvV));
-	vec3 specular = light.specular * spec * vec3(texture(material.specular, uvV));
+	vec3 ambient = light.ambient * texture(material.diffuse, uvV).rgb;
+	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
+	vec3 specular = light.specular * spec * texture(material.specular, uvV).rgb;
 
-	vec3 phong = ambient + diffuse + specular;
+	// emission masking via the specular component
+	/*vec3 emission = vec3(0.0);
+	if (length(texture(material.specular, uvV).rgb) < 0.01) {
+		emission = texture(material.emission, uvV).rgb;
+	}*/
+	//////////////////////////////////////////////
+
+	vec3 emission = texture(material.emission, uvV).rgb;
+
+	vec3 phong = ambient + diffuse + specular + emission;
 
 	color = vec4(phong, 1.0);
 }

@@ -3,11 +3,13 @@
 #include <GL/glew.h>
 #include <s3/vertex.hpp>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <s3/renderable.hpp>
 #include <s3/surfaceable.hpp>
 #include <s3/transformable.hpp>
+#include <s3/window.hpp>
 
 namespace s3 {
 
@@ -68,6 +70,10 @@ private:
 	std::vector<vertex> m_v;		 /// stored vertices
 	std::vector<unsigned int> m_e;	 /// stored element indices
 	primitive m_prim;				 /// primitive type
+
+	/// map of material names to material data, loaded from .mtl files
+	std::unordered_map<std::string, s3::material> m_materials;
+	void load_mtl_library(const std::string& path);	  /// load a .mtl file into m_materials
 
 	GLuint m_vao;	/// primary vertex array
 	GLuint m_ebo;	/// element buffer object
