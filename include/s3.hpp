@@ -9,9 +9,13 @@
 #include <s3/uniformstruct.hpp>
 #include <s3/window.hpp>
 
-#include <s3/light/light.hpp>
+#include <s3/light/base.hpp>
+#include <s3/light/dir.hpp>
+#include <s3/light/point.hpp>
+#include <s3/light/spot.hpp>
 
 #include <s3/obj/plane.hpp>
+#include <s3/obj/skybox.hpp>
 
 #include <s3/cam/fixed.hpp>
 #include <s3/cam/free.hpp>

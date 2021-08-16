@@ -15,7 +15,7 @@ class mesh;
 /// abstract rendertarget object. inherited by window and rendertexture.
 class rendertarget {
 public:
-	/// input size of
+	/// construct using the size of the target
 	rendertarget(int width, int height);
 	virtual ~rendertarget();
 
@@ -32,6 +32,9 @@ public:
 	void set_height(int height);
 	/// update the target viewport size
 	void set_size(glm::vec2 size);
+
+	/// retrieve the internal framebuffer id
+	virtual GLuint framebuffer() const;
 
 protected:
 	friend class mesh;

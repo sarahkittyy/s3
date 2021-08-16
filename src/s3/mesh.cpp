@@ -210,6 +210,13 @@ int mesh::size() const {
 	return m_v.size();
 }
 
+/// just quickly forms a string to access an array uniform given the name and index
+static std::string uniform_arr(std::string name, int idx) {
+	std::ostringstream ss;
+	ss << name << "[" << idx << "]";
+	return ss.str();
+}
+
 void mesh::draw(rendertarget& target, drawstate ds) {
 	//! prioritize drawstate material, shaders, etc. over this object's settings
 
@@ -230,6 +237,7 @@ void mesh::draw(rendertarget& target, drawstate ds) {
 	} else {
 		throw std::runtime_error("Cannot render without a camera!");
 	}
+	/// materials
 	if (ds.material) {
 		ds.material->populate("material", *ds.shader);
 	} else if (material()) {
@@ -237,10 +245,18 @@ void mesh::draw(rendertarget& target, drawstate ds) {
 	} else {
 		s3::material().populate("material", *ds.shader);
 	}
-	if (ds.light) {
-		ds.light->populate("light", *ds.shader);
-	} else {
-		light::light().populate("light", *ds.shader);
+	/// lights
+	ds.shader->set_uniform("pointLightCount", (int)ds.pointlight_count());
+	for (int i = 0; i < ds.pointlight_count(); ++i) {
+		ds.get_pointlight(i)->populate(uniform_arr("pointlights", i).c_str(), *ds.shader);
+	}
+	ds.shader->set_uniform("dirLightCount", (int)ds.dirlight_count());
+	for (int i = 0; i < ds.dirlight_count(); ++i) {
+		ds.get_dirlight(i)->populate(uniform_arr("dirlights", i).c_str(), *ds.shader);
+	}
+	ds.shader->set_uniform("spotLightCount", (int)ds.spotlight_count());
+	for (int i = 0; i < ds.spotlight_count(); ++i) {
+		ds.get_spotlight(i)->populate(uniform_arr("spotlights", i).c_str(), *ds.shader);
 	}
 
 	glm::mat4 model = ds.transform.matrix();

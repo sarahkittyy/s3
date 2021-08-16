@@ -148,6 +148,10 @@ void free::set_dir(float pitch, float yaw) {
 	m_facing = glm::normalize(dir);
 }
 
+glm::vec3 free::get_dir() const {
+	return m_facing;
+}
+
 void free::set_pos(glm::vec3 pos) {
 	m_pos		  = pos;
 	glm::vec3 d	  = m_facing - pos;

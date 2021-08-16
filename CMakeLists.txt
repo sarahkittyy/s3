@@ -28,7 +28,7 @@ target_include_directories(s3 PUBLIC
 	"include/"
 	PRIVATE
 	"src/"
-  "libs/"
+	"libs/"
 )
 target_link_libraries(s3
 	glfw GLEW GL

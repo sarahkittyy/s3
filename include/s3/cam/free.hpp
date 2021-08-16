@@ -38,10 +38,14 @@ public:
 
 	/// manually face a direction (angles in degrees)
 	void set_dir(float pitch, float yaw);
+	/// get the direction we are facing
+	glm::vec3 get_dir() const;
+
 	/// manually set the camera's position
 	void set_pos(glm::vec3 pos);
 	/// retrieve the camera's current position
 	glm::vec3 get_pos() const;
+
 
 private:
 	/// clock for measuring deltas between frames

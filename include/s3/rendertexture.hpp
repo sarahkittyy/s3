@@ -8,14 +8,22 @@ namespace s3 {
 /// framebuffer to render to a texture
 class rendertexture : public rendertarget, public texture {
 public:
-	rendertexture(int width, int height);
+	rendertexture(int width, int height, texture_type type = texture_type::DEFAULT);
 	~rendertexture();
 
 	rendertexture(const rendertexture&) = delete;
 	rendertexture& operator=(const rendertexture&) = delete;
 
-	/// free all internal opengl resources
-	void del();
+	/// blit this rendertexture onto the given framebuffer id
+	void blit(GLuint fbo, int target_width, int target_height);
+	/// blit this rendertexture onto another
+	void blit(rendertarget& other);
+
+	/// return the internal framebuffer handle
+	GLuint framebuffer() const;
+
+	/// rendertarget::size and texture::size overlap so this just makes my intellisense happy
+	using rendertarget::size;
 
 protected:
 	/// binds the framebuffer

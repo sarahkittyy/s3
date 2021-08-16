@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 
+#include <s3/color.hpp>
 #include <s3/uniformstruct.hpp>
 
 namespace s3 {
@@ -29,7 +30,7 @@ void main() {
 
 	posV = vec3(model * vec4(pos, 1.0));
 	uvV = uv;
-	normV = norm_model * norm;
+	normV = normalize(norm_model * norm);
 }
 )shader";
 
@@ -55,18 +56,73 @@ struct Material {
 };
 uniform Material material;
 
-struct Light {
+// max of each type of light
+#define MAX_LIGHTS 16
+
+struct PointLight {
 	vec3 position;
 
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float constant;
+	float linear;
+	float quadratic;
 };
-uniform Light light;
+uniform PointLight pointlights[MAX_LIGHTS];
+uniform int pointLightCount;
+
+struct DirLight {
+	vec3 direction;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform DirLight dirlights[MAX_LIGHTS];
+uniform int dirLightCount;
+
+struct SpotLight {
+	vec3 position;
+	vec3 direction;
+	float innerAngle;
+	float outerAngle;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+
+	float constant;
+	float linear;
+	float quadratic;
+};
+uniform SpotLight spotlights[MAX_LIGHTS];
+uniform int spotLightCount;
+
+vec3 PointLightCalc(PointLight light, vec3 camDir);
+vec3 DirLightCalc(DirLight light, vec3 camDir);
+vec3 SpotLightCalc(SpotLight light, vec3 camDir);
 
 void main() {
-	vec3 lightDir = normalize(light.position - posV);
 	vec3 camDir = normalize(cam - posV);
+
+	vec3 lightSum = vec3(0.0);
+	for(int i = 0; i < pointLightCount; ++i) {
+		lightSum += PointLightCalc(pointlights[i], camDir);
+	}
+	for(int i = 0; i < dirLightCount; ++i) {
+		lightSum += DirLightCalc(dirlights[i], camDir);
+	}
+	for(int i = 0; i < spotLightCount; ++i) {
+		lightSum += SpotLightCalc(spotlights[i], camDir);
+	}
+
+	color = vec4(lightSum, 1.0);
+}
+
+vec3 PointLightCalc(PointLight light, vec3 camDir) {
+	vec3 lightDir = normalize(light.position - posV);
 	vec3 halfDir = normalize(lightDir + camDir);
 
 	float diff = max(dot(normV, lightDir), 0.0);
@@ -76,18 +132,69 @@ void main() {
 	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
 	vec3 specular = light.specular * spec * texture(material.specular, uvV).rgb;
 
-	// emission masking via the specular component
-	/*vec3 emission = vec3(0.0);
-	if (length(texture(material.specular, uvV).rgb) < 0.01) {
-		emission = texture(material.emission, uvV).rgb;
-	}*/
-	//////////////////////////////////////////////
+	float dist = length(light.position - posV);
+	float falloff = 1.0 / (light.constant + 
+			light.linear * dist + 
+			light.quadratic * (dist * dist)
+	);
+
+	ambient *= falloff;
+	diffuse *= falloff;
+	specular *= falloff;
 
 	vec3 emission = texture(material.emission, uvV).rgb;
 
-	vec3 phong = ambient + diffuse + specular + emission;
+	return ambient + diffuse + specular + emission;
+}
 
-	color = vec4(phong, 1.0);
+vec3 DirLightCalc(DirLight light, vec3 camDir) {
+	vec3 lightDir = normalize(-light.direction);
+	vec3 halfDir = normalize(lightDir + camDir);
+
+	float diff = max(dot(normV, lightDir), 0.0);
+	float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+
+	vec3 ambient = light.ambient * texture(material.diffuse, uvV).rgb;
+	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
+	vec3 specular = light.specular * spec * texture(material.specular, uvV).rgb;
+
+	vec3 emission = texture(material.emission, uvV).rgb;
+
+	return ambient + diffuse + specular + emission;
+}
+
+vec3 SpotLightCalc(SpotLight light, vec3 camDir) {
+	vec3 lightDir = normalize(light.position - posV);
+	vec3 halfDir = normalize(lightDir + camDir);
+
+	vec3 ambient = light.ambient * texture(material.diffuse, uvV).rgb;
+	float dist = length(light.position - posV);
+	float falloff = 1.0 / (light.constant + 
+			light.linear * dist + 
+			light.quadratic * (dist * dist)
+	);
+	ambient *= falloff;
+
+	vec3 emission = texture(material.emission, uvV).rgb;
+
+	float theta = dot(lightDir, normalize(-light.direction));
+	if (theta > light.outerAngle) {
+		float diff = max(dot(normV, lightDir), 0.0);
+		float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+
+		vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
+		vec3 specular = light.specular * spec * texture(material.specular, uvV).rgb;
+
+		float epsilon = light.innerAngle - light.outerAngle;
+		float intensity = clamp((theta - light.outerAngle) / epsilon, 0.0, 1.0);
+
+		diffuse *= falloff * intensity;
+		specular *= falloff * intensity;
+
+		return ambient + diffuse + specular + emission;
+	} else {
+		return ambient + emission;
+	}
 }
 )shader";
 
@@ -120,6 +227,11 @@ template <>
 void shader::set_uniform(const char* name, const glm::vec3& data) {
 	int loc = glGetUniformLocation(m_prog, name);
 	glUniform3fv(loc, 1, &data[0]);
+}
+
+template <>
+void shader::set_uniform(const char* name, const color& data) {
+	set_uniform<glm::vec4>(name, data);
 }
 
 template <>

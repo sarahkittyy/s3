@@ -2,8 +2,12 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <s3/color.hpp>
+
 #include <string>
+#include <type_traits>
+#include <vector>
+
+#include <s3/color.hpp>
 
 namespace s3 {
 
@@ -19,12 +23,18 @@ enum class filter_mode {
 	LINEAR	= GL_LINEAR,
 };
 
+enum class texture_type {
+	DEFAULT		= GL_TEXTURE_2D,
+	CUBEMAP		= GL_TEXTURE_CUBE_MAP,
+	MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+};
+
 /**
  * @brief usable opengl texture
  */
 class texture {
 public:
-	texture();
+	texture(texture_type type = texture_type::DEFAULT);
 	~texture();
 
 	texture(const texture&) = delete;
@@ -39,11 +49,18 @@ public:
 	virtual void create(int width, int height);
 
 	/**
-	 * @brief load a texture given a file path
+	 * @brief load the texture given a file path
 	 *
 	 * @param path the path to the file
 	 */
 	void from_file(const std::string& path);
+
+	/**
+	 * @brief load the texture given paths to cubemap faces
+	 *
+	 * @param paths the paths to the cubemap, in order r, l, t, bot, f, back
+	 */
+	void from_cubemap(std::vector<std::string> paths);
 
 	/**
 	 * @brief set opengl's texture filtering mode
@@ -83,7 +100,7 @@ public:
 	 *
 	 * @param unit the texture unit to clear
 	 */
-	static void unbind(int unit = 0);
+	static void unbind(int unit = 0, texture_type type = texture_type::DEFAULT);
 
 	/**
 	 * @brief retrieve the internal opengl texture id
@@ -92,19 +109,33 @@ public:
 	 */
 	GLuint handle() const;
 
+	/**
+	 * @brief retrieve the internal texture's type
+	 *
+	 * @return texture_type
+	 */
+	texture_type get_type() const;
+
 private:
-	GLuint m_tex;	/// opengl texture
-	int m_w, m_h;	/// texture dimensions
+	const texture_type m_type;	 /// the internal texture type
+	GLuint m_tex;				 /// opengl texture
+	int m_w, m_h;				 /// texture dimensions
 
 	filter_mode m_f;	/// filter mode
 	color m_bc;			/// border color
 	wrap_mode m_wrap;	/// wrap mode
 
+
+
 	/**
 	 * @brief update the texture params based on the saved values
 	 *
 	 */
-	void update_tex_params();
+	void update_tex_params() {
+		set_filter_mode(m_f);
+		set_border_color(m_bc);
+		set_wrap_mode(m_wrap);
+	}
 };
 
 }

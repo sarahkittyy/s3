@@ -43,6 +43,10 @@ void rendertarget::set_size(glm::vec2 size) {
 	set_height(size.y);
 }
 
+GLuint rendertarget::framebuffer() const {
+	return 0;
+}
+
 void rendertarget::bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -59,6 +63,8 @@ void rendertarget::reset_opengl() {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_BLEND);
+	glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_MULTISAMPLE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glFrontFace(GL_CCW);

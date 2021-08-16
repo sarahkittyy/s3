@@ -7,17 +7,11 @@
 
 namespace s3::light {
 
-/// a light source
-class light : public uniformstruct {
+/// an abstract light source, inherited by point, directional, and spotlight
+class base : public uniformstruct {
 public:
-	/// construct the light, with an optional position
-	light(glm::vec3 pos = glm::vec3(0, 10, 0));
-	light(float x, float y, float z);
-
-	/// set the light position
-	void set_pos(glm::vec3 pos);
-	/// retrieve the light position
-	glm::vec3 get_pos() const;
+	base();
+	virtual ~base();
 
 	/// set the ambient color
 	void set_ambient(color ambient);
@@ -34,12 +28,10 @@ public:
 	/// retrieve the specular color
 	color get_specular() const;
 
-	void populate(const char* context, shader& s) const;
+	/// populate the shader with the light parameters
+	virtual void populate(const char* context, shader& s) const;
 
 private:
-	/// light pos
-	glm::vec3 m_position;
-
 	/// light properties
 	color m_ambient;
 	color m_diffuse;
