@@ -15,10 +15,12 @@ static const char* vs_default = R"shader(
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 norm;
+layout(location = 3) in vec3 tangent;
 
 out vec3 posV;
 out vec2 uvV;
 out vec3 normV;
+out mat3 TBN;
 
 uniform mat4 model;
 uniform mat3 norm_model;
@@ -31,6 +33,12 @@ void main() {
 	posV = vec3(model * vec4(pos, 1.0));
 	uvV = uv;
 	normV = normalize(norm_model * norm);
+
+	vec3 T = normalize(vec3(model * vec4(tangent, 0.0)));
+	vec3 N = normalize(vec3(model * vec4(norm, 0.0)));
+	vec3 B = cross(N, T);
+	T = normalize(T - dot(T, N) * N);
+	TBN = mat3(T, B, N);
 }
 )shader";
 
@@ -40,6 +48,7 @@ static const char* fs_default = R"shader(
 in vec3 posV;
 in vec2 uvV;
 in vec3 normV;
+in mat3 TBN;
 
 out vec4 color;
 
@@ -52,6 +61,9 @@ struct Material {
 	sampler2D diffuse; // texture
 	sampler2D specular; // specular mapping
 	sampler2D emission; // optional emission mapping
+
+	bool normalSet; // is the normal map set?
+	sampler2D normal; // optional normal mapping
 	float shininess;
 };
 uniform Material material;
@@ -100,33 +112,48 @@ struct SpotLight {
 uniform SpotLight spotlights[MAX_LIGHTS];
 uniform int spotLightCount;
 
-vec3 PointLightCalc(PointLight light, vec3 camDir);
-vec3 DirLightCalc(DirLight light, vec3 camDir);
-vec3 SpotLightCalc(SpotLight light, vec3 camDir);
+vec3 PointLightCalc(PointLight light, vec3 camDir, vec3 fragNormal);
+vec3 DirLightCalc(DirLight light, vec3 camDir, vec3 fragNormal);
+vec3 SpotLightCalc(SpotLight light, vec3 camDir, vec3 fragNormal);
 
 void main() {
+
 	vec3 camDir = normalize(cam - posV);
+
+	// per-fragment normal for normal mapping purposes
+	vec3 fragNormal = texture(material.normal, uvV).rgb;
+	if (material.normalSet) {
+		// normalizes from 0 - 1 to -1 - 1
+		fragNormal = fragNormal * 2.0 - 1.0;
+		fragNormal = normalize(TBN * fragNormal);
+		color = vec4(fragNormal, 1.0);
+	} else {
+		// just use vertex normal if no normal map is set
+		fragNormal = normV;
+		discard;
+	}
+	return;
 
 	vec3 lightSum = vec3(0.0);
 	for(int i = 0; i < pointLightCount; ++i) {
-		lightSum += PointLightCalc(pointlights[i], camDir);
+		lightSum += PointLightCalc(pointlights[i], camDir, fragNormal);
 	}
 	for(int i = 0; i < dirLightCount; ++i) {
-		lightSum += DirLightCalc(dirlights[i], camDir);
+		lightSum += DirLightCalc(dirlights[i], camDir, fragNormal);
 	}
 	for(int i = 0; i < spotLightCount; ++i) {
-		lightSum += SpotLightCalc(spotlights[i], camDir);
+		lightSum += SpotLightCalc(spotlights[i], camDir, fragNormal);
 	}
 
 	color = vec4(lightSum, 1.0);
 }
 
-vec3 PointLightCalc(PointLight light, vec3 camDir) {
+vec3 PointLightCalc(PointLight light, vec3 camDir, vec3 fragNormal) {
 	vec3 lightDir = normalize(light.position - posV);
 	vec3 halfDir = normalize(lightDir + camDir);
 
-	float diff = max(dot(normV, lightDir), 0.0);
-	float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+	float diff = max(dot(fragNormal, lightDir), 0.0);
+	float spec = pow(max(dot(fragNormal, halfDir), 0.0), material.shininess);
 
 	vec3 ambient = light.ambient * texture(material.diffuse, uvV).rgb;
 	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
@@ -147,12 +174,12 @@ vec3 PointLightCalc(PointLight light, vec3 camDir) {
 	return ambient + diffuse + specular + emission;
 }
 
-vec3 DirLightCalc(DirLight light, vec3 camDir) {
+vec3 DirLightCalc(DirLight light, vec3 camDir, vec3 fragNormal) {
 	vec3 lightDir = normalize(-light.direction);
 	vec3 halfDir = normalize(lightDir + camDir);
 
-	float diff = max(dot(normV, lightDir), 0.0);
-	float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+	float diff = max(dot(fragNormal, lightDir), 0.0);
+	float spec = pow(max(dot(fragNormal, halfDir), 0.0), material.shininess);
 
 	vec3 ambient = light.ambient * texture(material.diffuse, uvV).rgb;
 	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
@@ -163,7 +190,7 @@ vec3 DirLightCalc(DirLight light, vec3 camDir) {
 	return ambient + diffuse + specular + emission;
 }
 
-vec3 SpotLightCalc(SpotLight light, vec3 camDir) {
+vec3 SpotLightCalc(SpotLight light, vec3 camDir, vec3 fragNormal) {
 	vec3 lightDir = normalize(light.position - posV);
 	vec3 halfDir = normalize(lightDir + camDir);
 
@@ -179,8 +206,8 @@ vec3 SpotLightCalc(SpotLight light, vec3 camDir) {
 
 	float theta = dot(lightDir, normalize(-light.direction));
 	if (theta > light.outerAngle) {
-		float diff = max(dot(normV, lightDir), 0.0);
-		float spec = pow(max(dot(normV, halfDir), 0.0), material.shininess);
+		float diff = max(dot(fragNormal, lightDir), 0.0);
+		float spec = pow(max(dot(fragNormal, halfDir), 0.0), material.shininess);
 
 		vec3 diffuse = light.diffuse * diff * texture(material.diffuse, uvV).rgb;
 		vec3 specular = light.specular * spec * texture(material.specular, uvV).rgb;
@@ -244,6 +271,11 @@ template <>
 void shader::set_uniform(const char* name, const GLint& data) {
 	int loc = glGetUniformLocation(m_prog, name);
 	glUniform1iv(loc, 1, &data);
+}
+
+template <>
+void shader::set_uniform(const char* name, const bool& data) {
+	set_uniform<GLint>(name, (int)data);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

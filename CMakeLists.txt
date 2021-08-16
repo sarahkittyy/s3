@@ -8,6 +8,7 @@ option(BUILD_TESTS "Build the tests." ON)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
+find_package(assimp REQUIRED)
 include(FindOpenGL)
 
 file(GLOB_RECURSE sources "src/*.cpp")
@@ -29,7 +30,8 @@ target_include_directories(s3 PUBLIC
 	PRIVATE
 	"src/"
 	"libs/"
+	${ASSIMP_INCLUDE_DIRS}
 )
 target_link_libraries(s3
-	glfw GLEW GL
+	glfw GLEW GL ${ASSIMP_LIBRARIES}
 )

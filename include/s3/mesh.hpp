@@ -43,11 +43,7 @@ public:
 	/// retrieve the primitive array type
 	primitive get_primitive_type() const;
 
-	/// load the mesh data from a OBJ formatted model
-	void load_from_obj(std::istream& data);
-	void load_from_obj(const std::string& data);
-
-	/// load the mesh data from a given .obj file
+	/// load the mesh data from a given model file
 	void load_from_file(const std::string& file);
 
 	/// append a vertex to the mesh
@@ -57,7 +53,7 @@ public:
 	void push_t(unsigned a, unsigned b, unsigned c);
 
 	/// flush vertices and generate the opengl mesh data
-	void gen();
+	void gen(bool compute_tangents = true);
 
 	/// count how many vertices are in this mesh
 	int size() const;
@@ -78,6 +74,8 @@ private:
 	GLuint m_vao;	/// primary vertex array
 	GLuint m_ebo;	/// element buffer object
 	GLuint m_vbo;	/// buffer for vertex data
+
+	void compute_tangents();   /// compute the tangents manually and store the result in m_t
 
 	void bind();   /// bind the vertex array as active
 };

@@ -29,6 +29,11 @@ public:
 	/// retrieve the emission map
 	texture* get_emission();
 
+	/// add a normal map
+	void set_normal(texture& normal);
+	/// retrieve the normal map
+	texture* get_normal();
+
 	/// sets the texture for both the diffuse and specular mappings
 	void set_texture(texture& tex);
 
@@ -46,6 +51,7 @@ private:
 	texture* m_diffuse;	   /// diffuse map
 	texture* m_specular;   /// specular map
 	texture* m_emission;   /// emission map
+	texture* m_normal;	   /// normal map
 	float m_shininess;	   /// affects specular reflection
 };
 

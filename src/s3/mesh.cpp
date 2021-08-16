@@ -19,6 +19,7 @@ mesh::mesh()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	clear();
 }
@@ -189,7 +190,10 @@ void mesh::push_t(unsigned a, unsigned b, unsigned c) {
 	m_e.push_back(c);
 }
 
-void mesh::gen() {
+void mesh::gen(bool ct) {
+	if (ct) {
+		compute_tangents();
+	}
 	bind();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -199,11 +203,54 @@ void mesh::gen() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_e.size() * sizeof(unsigned int), m_e.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-						  sizeof(vertex), 0);
+						  sizeof(vertex),
+						  0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-						  sizeof(vertex), (void*)sizeof(glm::vec3));
+						  sizeof(vertex),
+						  (void*)sizeof(glm::vec3));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
-						  sizeof(vertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+						  sizeof(vertex),
+						  (void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE,
+						  sizeof(vertex),
+						  (void*)(sizeof(glm::vec3) + sizeof(glm::vec2) + sizeof(glm::vec3)));
+}
+
+void mesh::compute_tangents() {
+	for (int i = 0; i < m_e.size(); i += 3) {
+		// counter clockwise vertices
+		unsigned int a, b, c;
+		a = m_e[i];
+		b = m_e[i + 1];
+		c = m_e[i + 2];
+
+		// load positions
+		glm::vec3 p1, p2, p3;
+		p1 = m_v[a].pos;
+		p2 = m_v[b].pos;
+		p3 = m_v[c].pos;
+		// load uvs
+		glm::vec2 uv1, uv2, uv3;
+		uv1 = m_v[a].uv;
+		uv2 = m_v[b].uv;
+		uv3 = m_v[c].uv;
+
+		glm::vec3 e1   = p2 - p1;
+		glm::vec3 e2   = p3 - p1;
+		glm::vec2 duv1 = uv2 - uv1;
+		glm::vec2 duv2 = uv3 - uv1;
+
+		float f = 1.0f / (duv1.x * duv2.y - duv2.x * duv1.y);
+
+		glm::vec3 tan;
+		tan.x = f * (duv2.y * e1.x - duv1.y * e2.x);
+		tan.y = f * (duv2.y * e1.y - duv1.y * e2.y);
+		tan.z = f * (duv2.y * e1.z - duv1.y * e2.x);
+
+		m_v[a].tangent = tan;
+		m_v[b].tangent = tan;
+		m_v[c].tangent = tan;
+	}
 }
 
 int mesh::size() const {

@@ -2,6 +2,14 @@
 
 3D graphics & general application library inspired by SFML.
 
+## Dependencies
+
+- GLFW3
+- GLEW
+- OpenGL 3.3
+- glm
+- [Assimp](https://github.com/assimp/assimp)
+
 ## Examples
 
 ## TODO
@@ -36,6 +44,10 @@
 - [ ] refactor camera get_pos() and position() confusion
 - [ ] sort out surfaceable, transformable, etc, into prop:: namespace
 - [ ] anti-aliasing configuration (currently locked at 4)
+- [ ] reflection mapping
+- [ ] refraction mapping
+- [ ] dynamic environment mappings (real reflections)
+- [ ] assimp model loading
 
 ## Known Issues
 
