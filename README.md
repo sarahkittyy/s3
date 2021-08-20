@@ -54,3 +54,6 @@
 - ~~Changing freecam position causes a sudden jump when the mouse is next moved.~~
 - ~~Pointing freecam straight down causes W and S movement acceleration to become painfully slow.~~
 - No way to scale UVS in textures.
+- Calculating the TBN in the vertex shader is significantly more efficient.
+
+in vec3 camT;

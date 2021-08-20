@@ -43,7 +43,11 @@ public:
 	/// retrieve the primitive array type
 	primitive get_primitive_type() const;
 
-	/// load the mesh data from a given model file
+	/// load the mesh data from a OBJ formatted model
+	void load_from_obj(std::istream& data);
+	void load_from_obj(const std::string& data);
+
+	/// load the mesh data from a given .obj file
 	void load_from_file(const std::string& file);
 
 	/// append a vertex to the mesh

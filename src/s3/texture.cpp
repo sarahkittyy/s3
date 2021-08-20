@@ -54,7 +54,6 @@ void texture::from_file(const std::string& path) {
 	bind();
 
 	int ch;
-	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &m_w, &m_h, &ch, 0);
 	if (!data) throw std::runtime_error("Could not load image " + path + ".");
 

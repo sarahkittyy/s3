@@ -34,6 +34,15 @@ public:
 	/// retrieve the normal map
 	texture* get_normal();
 
+	/// add a height map
+	void set_height(texture& height);
+	/// retrieve the height map
+	texture* get_height();
+	/// set the scale of the heightmap
+	void set_height_scale(float scale);
+	/// retrieve the scale of the heightmap
+	float get_height_scale() const;
+
 	/// sets the texture for both the diffuse and specular mappings
 	void set_texture(texture& tex);
 
@@ -48,11 +57,13 @@ public:
 	void populate(const char* context, shader& s) const;
 
 private:
-	texture* m_diffuse;	   /// diffuse map
-	texture* m_specular;   /// specular map
-	texture* m_emission;   /// emission map
-	texture* m_normal;	   /// normal map
-	float m_shininess;	   /// affects specular reflection
+	texture* m_diffuse;		/// diffuse map
+	texture* m_specular;	/// specular map
+	texture* m_emission;	/// emission map
+	texture* m_normal;		/// normal map
+	texture* m_height;		/// height map
+	float m_height_scale;	/// the scale that the height map affects the object
+	float m_shininess;		/// affects specular reflection
 };
 
 }

@@ -7,6 +7,8 @@ material::material()
 	  m_specular(nullptr),
 	  m_emission(nullptr),
 	  m_normal(nullptr),
+	  m_height(nullptr),
+	  m_height_scale(0.1f),
 	  m_shininess(32.f) {
 }
 
@@ -45,6 +47,22 @@ texture* material::get_normal() {
 	return m_normal;
 }
 
+void material::set_height(texture& height) {
+	m_height = &height;
+}
+
+texture* material::get_height() {
+	return m_height;
+}
+
+void material::set_height_scale(float height_scale) {
+	m_height_scale = height_scale;
+}
+
+float material::get_height_scale() const {
+	return m_height_scale;
+}
+
 void material::set_texture(texture& tex) {
 	set_diffuse(tex);
 	set_specular(tex);
@@ -59,21 +77,25 @@ float material::get_shininess() const {
 }
 
 void material::clear() {
-	m_diffuse	= nullptr;
-	m_specular	= nullptr;
-	m_emission	= nullptr;
-	m_normal	= nullptr;
-	m_shininess = 32;
+	m_diffuse	   = nullptr;
+	m_specular	   = nullptr;
+	m_emission	   = nullptr;
+	m_normal	   = nullptr;
+	m_height	   = nullptr;
+	m_height_scale = 0.1f;
+	m_shininess	   = 32;
 }
 
 void material::populate(const char* context, shader& s) const {
 	fill(context, "shininess", m_shininess, s);
+	fill(context, "height_scale", m_height_scale, s);
 	fill(context, "normalSet", m_normal != nullptr, s);
 
 	s.set_uniform("material.diffuse", 0);
 	s.set_uniform("material.specular", 1);
 	s.set_uniform("material.emission", 2);
 	s.set_uniform("material.normal", 3);
+	s.set_uniform("material.height", 4);
 
 
 	if (m_diffuse) {
@@ -98,6 +120,12 @@ void material::populate(const char* context, shader& s) const {
 		m_normal->bind(3);
 	} else {
 		texture::unbind(3);
+	}
+
+	if (m_height) {
+		m_height->bind(4);
+	} else {
+		texture::unbind(4);
 	}
 }
 

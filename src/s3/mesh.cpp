@@ -229,6 +229,7 @@ void mesh::compute_tangents() {
 		p1 = m_v[a].pos;
 		p2 = m_v[b].pos;
 		p3 = m_v[c].pos;
+
 		// load uvs
 		glm::vec2 uv1, uv2, uv3;
 		uv1 = m_v[a].uv;
@@ -241,11 +242,10 @@ void mesh::compute_tangents() {
 		glm::vec2 duv2 = uv3 - uv1;
 
 		float f = 1.0f / (duv1.x * duv2.y - duv2.x * duv1.y);
-
 		glm::vec3 tan;
 		tan.x = f * (duv2.y * e1.x - duv1.y * e2.x);
 		tan.y = f * (duv2.y * e1.y - duv1.y * e2.y);
-		tan.z = f * (duv2.y * e1.z - duv1.y * e2.x);
+		tan.z = f * (duv2.y * e1.z - duv1.y * e2.z);
 
 		m_v[a].tangent = tan;
 		m_v[b].tangent = tan;
